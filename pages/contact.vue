@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="h-[61.6vh]">
     
   </div>
 </template>
