@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-base-200 py-10">
+  <div class="min-h-screen bg-base-200 py-10 relative bottton-0">
     <div class="container mx-auto px-4">
       <div class="card bg-base-100 shadow-xl">
         <figure>
@@ -45,4 +45,5 @@ export default {
 .container {
   max-width: 800px;
 }
+
 </style>
