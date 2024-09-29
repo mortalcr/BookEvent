@@ -31,7 +31,7 @@
             <span>Cocina equipada</span>
           </div>
         </div>
-        <p class="text-gray-600 mb-6">
+        <p class="mb-6">
           Este elegante salón es perfecto para tus eventos especiales. Con capacidad para hasta 50 personas,
           ofrece un espacio versátil y moderno para celebraciones, reuniones de negocios o cualquier ocasión especial.
         </p>
