@@ -113,3 +113,9 @@
   </nav>
 </footer>
 </template>
+<style>
+.FooterBar{
+  position: absolute;
+  bottom: 0;
+}
+</style>
