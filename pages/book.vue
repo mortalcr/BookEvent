@@ -16,7 +16,7 @@
         <div class="flex flex-wrap gap-4 mb-6">
           <div class="flex items-center">
             <user-icon class="w-5 h-5 mr-2 text-gray-500" />
-            <span>Hasta 50 personas</span>
+            <span>Hasta 100 personas</span>
           </div>
           <div class="flex items-center">
             <wifi-icon class="w-5 h-5 mr-2 text-gray-500" />
@@ -32,8 +32,8 @@
           </div>
         </div>
         <p class="mb-6">
-          Este elegante salón es perfecto para tus eventos especiales. Con capacidad para hasta 50 personas,
-          ofrece un espacio versátil y moderno para celebraciones, reuniones de negocios o cualquier ocasión especial.
+          Nuestro salón de eventos es perfecto para tus eventos especiales. Con capacidad para hasta 100 personas,
+          ofrece un espacio versátil y moderno para todas tus celebraciones.
         </p>
       </div>
 
