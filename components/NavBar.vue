@@ -1,5 +1,5 @@
 <template>
-    <nav class="navbar bg-base-100">
+    <nav class="navbar bg-base-200">
         <div class="navbar-start">
             <div class="dropdown">
                 <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
@@ -37,7 +37,7 @@
         <div class="navbar-end">
             <label class="swap swap-rotate">
                 <!-- this hidden checkbox controls the state -->
-                <input type="checkbox" class="theme-controller" value="night" />
+                <input type="checkbox" class="theme-controller" v-model="colorMode.preference" value="night" />
 
                 <!-- sun icon -->
                 <svg
@@ -60,3 +60,6 @@
         </div>
     </nav>
 </template>
+<script setup lang="ts">
+const colorMode = useColorMode();
+</script>
