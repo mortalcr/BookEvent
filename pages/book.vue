@@ -53,7 +53,7 @@
                 locale = "es"
                 color = "red"
                 transparent
-                
+                :disabled-dates="disabledDates"
               />
             </div>
             <div class="mb-4">
@@ -72,7 +72,7 @@
               <h3 class="font-semibold mb-2">Precio</h3>
               <p class="text-2xl font-bold">₡50,000 CRC <span class="text-sm font-normal text-gray-500">por día</span></p>
             </div>
-            <button class="btn btn-primary w-full">Reservar ahora</button>
+            <button class="btn btn-primary w-full"  @click="test">Reservar ahora</button>
           </div>
         </div>
       </div>
@@ -86,8 +86,14 @@ import { MapPinIcon, UserIcon, WifiIcon, TvIcon, UtensilsIcon} from 'lucide-vue-
 import 'v-calendar/style.css';
 
 const date = ref(new Date());
+//Uses YYYY-MM-DD format
+const disabledDates = ref([
+  "2024-9-30",
+]);
 
-console.log (useColorMode())
+const test = () => {
+  console.log('date', date.value)
+}
 
 </script>
 
