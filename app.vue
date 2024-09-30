@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <NavBar />
-    <NuxtPage />
-    <FooterBar />
-  </div>
+    <div class="grid min-h-[100dvh] grid-rows-[auto_1fr_auto]">
+        <NavBar />
+        <NuxtPage />
+        <FooterBar />
+    </div>
 </template>
