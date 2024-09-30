@@ -54,7 +54,7 @@
                 color = "red"
                 transparent
                 :disabled-dates="disabledDates"
-                :is-dark="!!color.preference"
+                :is-dark="isDark"
               />
             </div>
             <div class="mb-4">
@@ -82,27 +82,25 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { MapPinIcon, UserIcon, WifiIcon, TvIcon, UtensilsIcon} from 'lucide-vue-next'
+import { ref, watch, onMounted } from 'vue';
+import { MapPinIcon, UserIcon, WifiIcon, TvIcon, UtensilsIcon} from 'lucide-vue-next';
 import 'v-calendar/style.css';
 
-const date = ref(new Date());
-//Uses YYYY-MM-DD format
-const disabledDates = ref([
-  "2024-9-30",
-]);
-
-const test = () => {
-  console.log('date', date.value)
-  console.log('Color', color.preference)
-}
-
 const color = useColorMode();
+const date = ref(new Date());
+const guests = ref(1);
+const disabledDates = ref(["2024-9-30"]);
+const isDark = ref(false);
 
+watch(() => color.preference, (newVal) => {
+  isDark.value = newVal === 'night';
+});
+
+onMounted(() => {
+  isDark.value = color.preference === 'night';
+});
 </script>
 
 <style>
-
-
 
 </style>
