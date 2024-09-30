@@ -50,6 +50,10 @@
                 class="custom-picker"
                 is-required
                 :min-date='new Date()'
+                locale = "es"
+                color = "red"
+                transparent
+                
               />
             </div>
             <div class="mb-4">
@@ -83,14 +87,12 @@ import 'v-calendar/style.css';
 
 const date = ref(new Date());
 
+console.log (useColorMode())
+
 </script>
 
 <style>
 
-.custom-picker {
-  background: linear-gradient(135deg, #34b3eea6, #33f7bca1);  
-  border-radius: 12px;
-  color: white;
-}
+
 
 </style>
