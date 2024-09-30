@@ -54,6 +54,7 @@
                 color = "red"
                 transparent
                 :disabled-dates="disabledDates"
+                :is-dark="!!color.preference"
               />
             </div>
             <div class="mb-4">
@@ -93,7 +94,10 @@ const disabledDates = ref([
 
 const test = () => {
   console.log('date', date.value)
+  console.log('Color', color.preference)
 }
+
+const color = useColorMode();
 
 </script>
 
