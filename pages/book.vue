@@ -76,7 +76,7 @@
               <p class="text-2xl font-bold">₡50,000 CRC <span class="text-sm font-normal text-gray-500">por día</span>
               </p>
             </div>
-            <button class="btn btn-primary w-full">Reservar ahora</button>
+            <button class="btn btn-primary w-full" @click="bookEvent">Reservar ahora</button>
           </div>
         </div>
       </div>
@@ -93,7 +93,7 @@ import { type Database } from '~/types/supabase';
 const color = useColorMode();
 const date = ref(new Date());
 const guests = ref(1);
-const disabledDates = ref([]);
+const disabledDates = ref<string[]>([]);
 const isDark = ref(false);
 
 const values = ref([]);
@@ -105,6 +105,34 @@ if (error) {
   console.error(error);
 }
 
+
+
+const loadReservations = async () => {
+  const { data, error } = await supabase.from("reservations").select("reservation_date");
+  if (error) {
+    console.error(error);
+  }
+  if (data) {
+    disabledDates.value = data.map((reservation) => (reservation.reservation_date));
+  }
+};
+
+
+const bookEvent = async () => {
+  
+  const { data, error } = await supabase.from("reservations").insert({
+    reservation_date: date.value.toISOString().split('T')[0],
+    email: "ZNoSabehacerBases@gmail.com"
+  });
+  if (error) {
+    console.error(error);
+  }
+  if (data) {
+    console.log(data);
+  }
+  
+};
+
 console.log(data);
 
 watch(() => color.preference, (newVal) => {
@@ -113,6 +141,7 @@ watch(() => color.preference, (newVal) => {
 
 onMounted(() => {
   isDark.value = color.preference === 'night';
+  loadReservations();
 });
 </script>
 
