@@ -30,7 +30,7 @@
         <div class="navbar-end">
             <label class="swap swap-rotate">
                 <!-- this hidden checkbox controls the state -->
-                <input type="checkbox" class="theme-controller" @change="toggleTheme" :checked="colorMode.preference === 'night'" />
+                <input type="checkbox" class="theme-controller" @change="toggleTheme" :checked="checked" />
 
                 <!-- sun icon -->
                 <svg class="swap-off h-10 w-10 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -50,29 +50,10 @@
 
 
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue';
-
 const colorMode = useColorMode();
-const storedTheme = ref('cupcake');
+const checked = colorMode.preference === 'night';
 
-onMounted(() => {
-  if (import.meta.client) {
-    const savedTheme = localStorage.getItem('nuxt-color-mode');
-    if (savedTheme) {
-      storedTheme.value = savedTheme;
-    }
-    colorMode.preference = storedTheme.value;
-  }
-});
-
-const toggleTheme = () => {
-  colorMode.preference = colorMode.preference === 'cupcake' ? 'night' : 'cupcake';
-  storedTheme.value = colorMode.preference;
+const toggleTheme = (): void => {
+    colorMode.preference = colorMode.preference === 'cupcake' ? 'night' : 'cupcake';
 };
-
-watch(() => colorMode.preference, (newTheme) => {
-  if (import.meta.client) {
-    localStorage.setItem('nuxt-color-mode', newTheme);
-  }
-});
 </script>
