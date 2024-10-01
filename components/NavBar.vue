@@ -71,7 +71,7 @@ const toggleTheme = () => {
 };
 
 watch(() => colorMode.preference, (newTheme) => {
-  if (process.client) {
+  if (import.meta.client) {
     localStorage.setItem('nuxt-color-mode', newTheme);
   }
 });
