@@ -34,6 +34,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      available_services: {
+        Row: {
+          created_at: string
+          description: string
+          id: number
+          name: string
+          price: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          id?: number
+          name: string
+          price: number
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: number
+          name?: string
+          price?: number
+        }
+        Relationships: []
+      }
       reservations: {
         Row: {
           created_at: string
@@ -82,7 +106,7 @@ export type Database = {
   }
 }
 
-type PublicSchema = Database[Extract<keyof Database, "public">]
+export type PublicSchema = Database[Extract<keyof Database, "public">]
 
 export type Tables<
   PublicTableNameOrOptions extends
