@@ -122,7 +122,7 @@ import 'v-calendar/style.css';
 const color = useColorMode();
 const date = ref(new Date());
 const guests = ref(1);
-const disabledDates = ref(["2024-9-30"]);
+const disabledDates = ref([]);
 const isDark = ref(false);
 
 watch(() => color.preference, (newVal) => {
