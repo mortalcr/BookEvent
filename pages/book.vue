@@ -63,7 +63,7 @@
             <div class="mb-4">
               <label for="dates">Selecciona las fechas</label>
               <v-date-picker borderless v-model="date" mode="date" class="custom-picker" is-required
-                :min-date='new Date()' locale="es" color="red" transparent :disabled-dates="disabledDates"
+                :min-date='new Date()' locale="es" :timezone="timezone" color="red" transparent :disabled-dates="disabledDates"
                 :is-dark="isDark" />
             </div>
             <div class="mb-4">
@@ -95,6 +95,7 @@ const date = ref(new Date());
 const guests = ref(1);
 const disabledDates = ref<string[]>([]);
 const isDark = ref(false);
+const timezone = ref('UTC');
 
 const values = ref([]);
 console.log(values);
