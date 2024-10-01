@@ -36,7 +36,7 @@
         </div>
         <div class="flex items-center mb-4">
           <map-pin-icon class="w-5 h-5 mr-2 text-gray-500" />
-          <span>San Ramon, Costa Rica</span>
+          <span><a target="_blank" href="https://www.google.com/maps/place/Rancho+Fern%C3%A1ndez+Fern%C3%A1ndez/@10.0911155,-84.453697,15z/data=!4m6!3m5!1s0x8fa044c4da796e8d:0xfd7cdc29a4041789!8m2!3d10.0911155!4d-84.453697!16s%2Fg%2F11bw2_gv47?entry=ttu&g_ep=EgoyMDI0MDkyOS4wIKXMDSoASAFQAw%3D%3D">San Ramon, Costa Rica</a></span>
         </div>
         {{ values }}
         <form class="flex flex-col gap-2">
