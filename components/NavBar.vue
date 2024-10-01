@@ -12,6 +12,7 @@
                 <ul tabindex="0"
                     class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
                     <li><a href="/">Home</a></li>
+                    <li><a href="book">Book</a></li>
                     <li><a href="about">About</a></li>
                     <li><a href="contact">Contact</a></li>
                 </ul>
@@ -21,7 +22,7 @@
         <div class="navbar-center hidden lg:flex">
             <ul class="menu menu-horizontal px-1">
                 <li><a href="/">Home</a></li>
-                <li><a href="book">Reservar</a></li>
+                <li><a href="book">Book</a></li>
                 <li><a href="about">About</a></li>
                 <li><a href="contact">Contact</a></li>
             </ul>
@@ -29,7 +30,7 @@
         <div class="navbar-end">
             <label class="swap swap-rotate">
                 <!-- this hidden checkbox controls the state -->
-                <input type="checkbox" class="theme-controller" v-model="colorMode.preference" value="night" />
+                <input type="checkbox" class="theme-controller" @change="toggleTheme" :checked="colorMode.preference === 'night'" />
 
                 <!-- sun icon -->
                 <svg class="swap-off h-10 w-10 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -46,6 +47,32 @@
         </div>
     </nav>
 </template>
+
+
 <script setup lang="ts">
+import { ref, watch, onMounted } from 'vue';
+
 const colorMode = useColorMode();
+const storedTheme = ref('cupcake');
+
+onMounted(() => {
+  if (import.meta.client) {
+    const savedTheme = localStorage.getItem('nuxt-color-mode');
+    if (savedTheme) {
+      storedTheme.value = savedTheme;
+    }
+    colorMode.preference = storedTheme.value;
+  }
+});
+
+const toggleTheme = () => {
+  colorMode.preference = colorMode.preference === 'cupcake' ? 'night' : 'cupcake';
+  storedTheme.value = colorMode.preference;
+};
+
+watch(() => colorMode.preference, (newTheme) => {
+  if (import.meta.client) {
+    localStorage.setItem('nuxt-color-mode', newTheme);
+  }
+});
 </script>

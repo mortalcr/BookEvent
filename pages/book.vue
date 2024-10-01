@@ -4,11 +4,44 @@
 
     <div class="grid md:grid-cols-2 gap-6">
       <div>
-        <img
-          src="assets/images/bookphoto.jpg"
-          alt="Salón Elegante"
-          class="w-full h-[400px] object-cover rounded-lg mb-4"
-        />
+        <div class="carousel w-full">
+  <div id="slide1" class="carousel-item relative w-full">
+    <img
+      src="/assets/images/ranchophoto1.png"
+      class="w-full h-[400px] object-cover rounded-lg mb-4" />
+    <div class="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+      <a href="#slide4" class="btn btn-circle">❮</a>
+      <a href="#slide2" class="btn btn-circle">❯</a>
+    </div>
+  </div>
+  <div id="slide2" class="carousel-item relative w-full">
+    <img
+      src="/assets/images/ranchophoto2.png"
+      class="w-full h-[400px] object-cover rounded-lg mb-4"" />
+    <div class="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+      <a href="#slide1" class="btn btn-circle">❮</a>
+      <a href="#slide3" class="btn btn-circle">❯</a>
+    </div>
+  </div>
+  <div id="slide3" class="carousel-item relative w-full">
+    <img
+      src="/assets/images/ranchophoto3.png"
+      class="w-full h-[400px] object-cover rounded-lg mb-4"" />
+    <div class="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+      <a href="#slide2" class="btn btn-circle">❮</a>
+      <a href="#slide4" class="btn btn-circle">❯</a>
+    </div>
+  </div>
+  <div id="slide4" class="carousel-item relative w-full">
+    <img
+      src="/assets/images/ranchophoto4.png"
+      class="w-full h-[400px] object-cover rounded-lg mb-4"" />
+    <div class="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+      <a href="#slide3" class="btn btn-circle">❮</a>
+      <a href="#slide1" class="btn btn-circle">❯</a>
+    </div>
+  </div>
+</div>
         <div class="flex items-center mb-4">
           <map-pin-icon class="w-5 h-5 mr-2 text-gray-500" />
           <span>San Ramon, Costa Rica</span>
@@ -54,6 +87,7 @@
                 color = "red"
                 transparent
                 :disabled-dates="disabledDates"
+                :is-dark="isDark"
               />
             </div>
             <div class="mb-4">
@@ -64,7 +98,7 @@
                 id="guests"
                 placeholder="1"
                 min="1"
-                max="50"
+                max="100"
                 class="input input-bordered w-full"
               />
             </div>
@@ -81,24 +115,25 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { MapPinIcon, UserIcon, WifiIcon, TvIcon, UtensilsIcon} from 'lucide-vue-next'
+import { ref, watch, onMounted } from 'vue';
+import { MapPinIcon, UserIcon, WifiIcon, TvIcon, UtensilsIcon} from 'lucide-vue-next';
 import 'v-calendar/style.css';
 
+const color = useColorMode();
 const date = ref(new Date());
-//Uses YYYY-MM-DD format
-const disabledDates = ref([
-  "2024-9-30",
-]);
+const guests = ref(1);
+const disabledDates = ref(["2024-9-30"]);
+const isDark = ref(false);
 
-const test = () => {
-  console.log('date', date.value)
-}
+watch(() => color.preference, (newVal) => {
+  isDark.value = newVal === 'night';
+});
 
+onMounted(() => {
+  isDark.value = color.preference === 'night';
+});
 </script>
 
 <style>
-
-
 
 </style>
