@@ -47,7 +47,7 @@
                 <span class="collapse-title">{{ service.name }}</span>
                 <span class="collapse-content">{{ service.description }}</span>
               </div>
-              <input type="checkbox" v-model="values" :data-element="service" :value="service.id" :checked="false" class="checkbox" name="check[]" />
+              <input type="checkbox" v-model="values" :data-element="service" :value="service" :checked="false" class="checkbox" name="check[]" />
             </div>
           </div>
         </form>
@@ -121,20 +121,54 @@ const loadReservations = async () => {
 
 const bookEvent = async () => {
   
+  if (values.value.length === 0) {
+    alert("Por favor selecciona al menos un servicio");
+    return;
+  }
+
   const { data, error } = await supabase.from("reservations").insert({
     reservation_date: date.value.toISOString().split('T')[0],
     email: "ZNoSabehacerBases@gmail.com"
   });
+
+
   if (error) {
     console.error(error);
   }
-  if (data) {
-    console.log(data);
+  else {
+    bookServices();
   }
-  
+
 };
 
 console.log(data);
+
+
+const getEventID = async () => {
+  const { data, error } = await supabase.from("reservations").select("id").eq("reservation_date", date.value.toISOString().split('T')[0]);
+  return data && data.length > 0 ? data[0].id : null;
+}
+
+const bookServices = async () => {
+  
+  const eventID = await getEventID();
+  console.log("LA ID DEL EVENTO: ",eventID);
+  console.log("LOS SERVICIOS SELECCIONADOS: ");
+  
+  let total_amount = 0;
+  
+  for (let i = 0; i < values.value.length; i++) {
+    total_amount += values.value[i].price;    
+    const { data, error } = await supabase.from("reservation_services").insert({
+      reservation_id: eventID,
+      service_id: values.value[i].id
+    }); 
+    if (error) {
+      console.error(error);
+    }
+  }
+  const { data, error } = await supabase.from("reservations").update({ total_amount: total_amount }).eq("id", eventID);
+};
 
 watch(() => color.preference, (newVal) => {
   isDark.value = newVal === 'night';
