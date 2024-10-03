@@ -36,7 +36,9 @@
         </div>
         <div class="flex items-center mb-4">
           <map-pin-icon class="w-5 h-5 mr-2 text-gray-500" />
-          <span><a target="_blank" href="https://www.google.com/maps/place/Rancho+Fern%C3%A1ndez+Fern%C3%A1ndez/@10.0911155,-84.453697,15z/data=!4m6!3m5!1s0x8fa044c4da796e8d:0xfd7cdc29a4041789!8m2!3d10.0911155!4d-84.453697!16s%2Fg%2F11bw2_gv47?entry=ttu&g_ep=EgoyMDI0MDkyOS4wIKXMDSoASAFQAw%3D%3D">San Ramon, Costa Rica</a></span>
+          <span><a target="_blank"
+              href="https://www.google.com/maps/place/Rancho+Fern%C3%A1ndez+Fern%C3%A1ndez/@10.0911155,-84.453697,15z/data=!4m6!3m5!1s0x8fa044c4da796e8d:0xfd7cdc29a4041789!8m2!3d10.0911155!4d-84.453697!16s%2Fg%2F11bw2_gv47?entry=ttu&g_ep=EgoyMDI0MDkyOS4wIKXMDSoASAFQAw%3D%3D">San
+              Ramon, Costa Rica</a></span>
         </div>
         {{ values }}
         <form class="flex flex-col gap-2">
@@ -47,7 +49,8 @@
                 <span class="collapse-title">{{ service.name }}</span>
                 <span class="collapse-content">{{ service.description }}</span>
               </div>
-              <input type="checkbox" v-model="values" :data-element="service" :value="service" :checked="false" class="checkbox" name="check[]" />
+              <input type="checkbox" v-model="values" :data-element="service" :value="service" :checked="false"
+                class="checkbox" name="check[]" />
             </div>
           </div>
         </form>
@@ -63,20 +66,31 @@
             <div class="mb-4">
               <label for="dates">Selecciona las fechas</label>
               <v-date-picker borderless v-model="date" mode="date" class="custom-picker" is-required
-                :min-date='new Date()' locale="es" :timezone="timezone" color="red" transparent :disabled-dates="disabledDates"
-                :is-dark="isDark" />
+                :min-date='new Date()' locale="es" :timezone="timezone" color="green" transparent
+                :disabled-dates="disabledDates" :is-dark="isDark" />
             </div>
             <div class="mb-4">
-              <label for="guests">Número de invitados</label>
-              <input type="number" v-model="guests" id="guests" placeholder="1" min="1" max="100 " @input="guests = guests > 100 ? 100 : guests < 1 ? 1 : Math.round(guests)"
+              <label for="guests">Número de invitados (capacidad 100 personas)</label>
+              <input type="number" v-model="guests" id="guests" placeholder="1" min="1" max="100 "
+                @input="guests = guests > 100 ? 100 : guests < 1 ? 1 : Math.round(guests)"
                 class="input input-bordered w-full" />
             </div>
             <div class="mb-6">
               <h3 class="font-semibold mb-2">Precio</h3>
-              <p class="text-2xl font-bold">₡{{values.map((service) => service.price).reduce((acc, price) => acc + price, 0)}} CRC <span class="text-sm font-normal text-gray-500">por día</span>
+              <p class="text-2xl font-bold">₡{{values.map((service) => service.price).reduce((acc, price) => acc +
+                price, 0)}} CRC <span class="text-sm font-normal text-gray-500">por día</span>
               </p>
             </div>
-            <button class="btn btn-primary w-full" @click="bookEvent">Reservar ahora</button>
+            <button class="btn btn-primary w-full" :disabled="values.length<1" @click="bookEvent">Reservar
+              ahora</button>
+            <div  v-if="values.length<1"  role="alert" class="alert alert-error">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>Debe seleccionar al menos un servicio.</span>
+            </div>
           </div>
         </div>
       </div>
@@ -97,7 +111,7 @@ const disabledDates = ref<string[]>([]);
 const isDark = ref(false);
 const timezone = ref('UTC');
 
-const price = ref(0);
+
 
 
 
