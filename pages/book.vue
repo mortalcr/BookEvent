@@ -68,12 +68,12 @@
             </div>
             <div class="mb-4">
               <label for="guests">Número de invitados</label>
-              <input type="number" v-model="guests" id="guests" placeholder="1" min="1" max="100"
+              <input type="number" v-model="guests" id="guests" placeholder="1" min="1" max="100 " @input="guests = guests > 100 ? 100 : guests < 1 ? 1 : Math.round(guests)"
                 class="input input-bordered w-full" />
             </div>
             <div class="mb-6">
               <h3 class="font-semibold mb-2">Precio</h3>
-              <p class="text-2xl font-bold">₡{{price}} CRC <span class="text-sm font-normal text-gray-500">por día</span>
+              <p class="text-2xl font-bold">₡{{values.map((service) => service.price).reduce((acc, price) => acc + price, 0)}} CRC <span class="text-sm font-normal text-gray-500">por día</span>
               </p>
             </div>
             <button class="btn btn-primary w-full" @click="bookEvent">Reservar ahora</button>
@@ -178,7 +178,7 @@ const bookServices = async () => {
       console.error(error);
     }
   }
-  const { data, error } = await supabase.from("reservations").update({ total_amount: total_amount }).eq("id", eventID||0);
+  const { data, error } = await supabase.from("reservations").update({ total_amount: total_amount, guests:guests.value }).eq("id", eventID||0);
 };
 
 watch(() => color.preference, (newVal) => {
