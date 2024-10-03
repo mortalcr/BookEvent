@@ -66,7 +66,7 @@
             <div class="mb-4">
               <label for="dates">Selecciona las fechas</label>
               <v-date-picker borderless v-model="date" mode="date" class="custom-picker" is-required
-                :min-date='new Date()' locale="es" :timezone="timezone" color="green" transparent
+                :min-date='new Date()' locale="es" :timezone="timezone"  transparent
                 :disabled-dates="disabledDates" :is-dark="isDark" />
             </div>
             <div class="mb-4">
