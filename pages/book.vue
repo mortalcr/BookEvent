@@ -73,7 +73,7 @@
             </div>
             <div class="mb-6">
               <h3 class="font-semibold mb-2">Precio</h3>
-              <p class="text-2xl font-bold">₡50,000 CRC <span class="text-sm font-normal text-gray-500">por día</span>
+              <p class="text-2xl font-bold">₡{{price}} CRC <span class="text-sm font-normal text-gray-500">por día</span>
               </p>
             </div>
             <button class="btn btn-primary w-full" @click="bookEvent">Reservar ahora</button>
@@ -97,7 +97,18 @@ const disabledDates = ref<string[]>([]);
 const isDark = ref(false);
 const timezone = ref('UTC');
 
-const values = ref([]);
+const price = ref(0);
+
+
+
+const values = ref<{
+  created_at: string;
+  description: string;
+  id: number;
+  name: string;
+  price: number;
+
+}[]>([]);
 console.log(values);
 
 const supabase = useSupabaseClient<Database>();
@@ -160,14 +171,14 @@ const bookServices = async () => {
   for (let i = 0; i < values.value.length; i++) {
     total_amount += values.value[i].price;    
     const { data, error } = await supabase.from("reservation_services").insert({
-      reservation_id: eventID,
+      reservation_id: eventID||0,
       service_id: values.value[i].id
     }); 
     if (error) {
       console.error(error);
     }
   }
-  const { data, error } = await supabase.from("reservations").update({ total_amount: total_amount }).eq("id", eventID);
+  const { data, error } = await supabase.from("reservations").update({ total_amount: total_amount }).eq("id", eventID||0);
 };
 
 watch(() => color.preference, (newVal) => {
