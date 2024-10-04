@@ -129,7 +129,7 @@ const values = ref<{
   price: number;
 
 }[]>([]);
-console.log(values);
+
 
 const supabase = useSupabaseClient<Database>();
 const { data, error } = await supabase.from("available_services").select();
@@ -153,10 +153,7 @@ const loadReservations = async () => {
 
 const bookEvent = async () => {
   
-  if (values.value.length === 0) {
-    alert("Por favor selecciona al menos un servicio");
-    return;
-  }
+  
 
   if (user.data.user) {
     email.value = "elusuariositienecorreo@gmail.com";
@@ -194,8 +191,7 @@ const getEventID = async () => {
 const bookServices = async () => {
   
   const eventID = await getEventID();
-  console.log("LA ID DEL EVENTO: ",eventID);
-  console.log("LOS SERVICIOS SELECCIONADOS: ");
+
   
   let total_amount = 0;
   
