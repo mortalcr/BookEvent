@@ -66,14 +66,18 @@
             <div class="mb-4">
               <label for="dates">Selecciona las fechas</label>
               <v-date-picker borderless v-model="date" mode="date" class="custom-picker" is-required
-                :min-date='new Date()' locale="es" :timezone="timezone"  transparent
-                :disabled-dates="disabledDates" :is-dark="isDark" />
+                :min-date='new Date()' locale="es" :timezone="timezone" transparent :disabled-dates="disabledDates"
+                :is-dark="isDark" />
             </div>
             <div class="mb-4">
               <label for="guests">Número de invitados (capacidad 100 personas)</label>
               <input type="number" v-model="guests" id="guests" placeholder="1" min="1" max="100 "
                 @input="guests = guests > 100 ? 100 : guests < 1 ? 1 : Math.round(guests)"
-                class="input input-bordered w-full" />
+                class="input input-bordered w-full mt-3" />
+            </div>
+            <div v-if="!user.data.user"  class="mb-4">
+              <label for="guests">Correo electronico (A este correo se enviará el comprobante)</label>
+              <input type="email" id="email" placeholder="Correo electronico" v-model="email" class="input input-bordered w-full mt-3" />
             </div>
             <div class="mb-6">
               <h3 class="font-semibold mb-2">Precio</h3>
@@ -83,7 +87,7 @@
             </div>
             <button class="btn btn-primary w-full" :disabled="values.length<1" @click="bookEvent">Reservar
               ahora</button>
-            <div  v-if="values.length<1"  role="alert" class="alert alert-error">
+            <div v-if="values.length<1" role="alert" class="alert alert-error">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
                 viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -111,6 +115,8 @@ const disabledDates = ref<string[]>([]);
 const isDark = ref(false);
 const timezone = ref('UTC');
 
+const email = ref<string>('');
+
 
 
 
@@ -131,6 +137,7 @@ if (error) {
   console.error(error);
 }
 
+const user = await supabase.auth.getUser().catch();
 
 
 const loadReservations = async () => {
@@ -151,9 +158,19 @@ const bookEvent = async () => {
     return;
   }
 
+  if (user.data.user) {
+    email.value = "elusuariositienecorreo@gmail.com";
+  }
+  else {
+    if (email.value === "") {
+      alert("Por favor ingrese un correo electronico");
+      return;
+    }
+  }
+
   const { data, error } = await supabase.from("reservations").insert({
     reservation_date: date.value.toISOString().split('T')[0],
-    email: "ZNoSabehacerBases@gmail.com"
+    email: email.value,
   });
 
 
@@ -166,7 +183,7 @@ const bookEvent = async () => {
 
 };
 
-console.log(data);
+//console.log(data);
 
 
 const getEventID = async () => {
@@ -193,6 +210,9 @@ const bookServices = async () => {
     }
   }
   const { data, error } = await supabase.from("reservations").update({ total_amount: total_amount, guests:guests.value }).eq("id", eventID||0);
+  
+  alert("Reservación exitosa");
+  window.location.reload();
 };
 
 watch(() => color.preference, (newVal) => {
