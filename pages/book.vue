@@ -36,7 +36,9 @@
         </div>
         <div class="flex items-center mb-4">
           <map-pin-icon class="w-5 h-5 mr-2 text-gray-500" />
-          <span>San Ramon, Costa Rica</span>
+          <span><a target="_blank"
+              href="https://www.google.com/maps/place/Rancho+Fern%C3%A1ndez+Fern%C3%A1ndez/@10.0911155,-84.453697,15z/data=!4m6!3m5!1s0x8fa044c4da796e8d:0xfd7cdc29a4041789!8m2!3d10.0911155!4d-84.453697!16s%2Fg%2F11bw2_gv47?entry=ttu&g_ep=EgoyMDI0MDkyOS4wIKXMDSoASAFQAw%3D%3D">San
+              Ramon, Costa Rica</a></span>
         </div>
         {{ values }}
         <form class="flex flex-col gap-2">
@@ -47,7 +49,8 @@
                 <span class="collapse-title">{{ service.name }}</span>
                 <span class="collapse-content">{{ service.description }}</span>
               </div>
-              <input type="checkbox" v-model="values" :data-element="service" :value="service.id" :checked="false" class="checkbox" name="check[]" />
+              <input type="checkbox" v-model="values" :data-element="service" :value="service" :checked="false"
+                class="checkbox" name="check[]" />
             </div>
           </div>
         </form>
@@ -63,20 +66,35 @@
             <div class="mb-4">
               <label for="dates">Selecciona las fechas</label>
               <v-date-picker borderless v-model="date" mode="date" class="custom-picker" is-required
-                :min-date='new Date()' locale="es" color="red" transparent :disabled-dates="disabledDates"
+                :min-date='new Date()' locale="es" :timezone="timezone" transparent :disabled-dates="disabledDates"
                 :is-dark="isDark" />
             </div>
             <div class="mb-4">
-              <label for="guests">Número de invitados</label>
-              <input type="number" v-model="guests" id="guests" placeholder="1" min="1" max="100"
-                class="input input-bordered w-full" />
+              <label for="guests">Número de invitados (capacidad 100 personas)</label>
+              <input type="number" v-model="guests" id="guests" placeholder="1" min="1" max="100 "
+                @input="guests = guests > 100 ? 100 : guests < 1 ? 1 : Math.round(guests)"
+                class="input input-bordered w-full mt-3" />
+            </div>
+            <div v-if="!user.data.user"  class="mb-4">
+              <label for="guests">Correo electronico (A este correo se enviará el comprobante)</label>
+              <input type="email" id="email" placeholder="Correo electronico" v-model="email" class="input input-bordered w-full mt-3" />
             </div>
             <div class="mb-6">
               <h3 class="font-semibold mb-2">Precio</h3>
-              <p class="text-2xl font-bold">₡50,000 CRC <span class="text-sm font-normal text-gray-500">por día</span>
+              <p class="text-2xl font-bold">₡{{values.map((service) => service.price).reduce((acc, price) => acc +
+                price, 0)}} CRC <span class="text-sm font-normal text-gray-500">por día</span>
               </p>
             </div>
-            <button class="btn btn-primary w-full">Reservar ahora</button>
+            <button class="btn btn-primary w-full" :disabled="values.length<1" @click="bookEvent">Reservar
+              ahora</button>
+            <div v-if="values.length<1" role="alert" class="alert alert-error">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>Debe seleccionar al menos un servicio.</span>
+            </div>
           </div>
         </div>
       </div>
@@ -93,11 +111,25 @@ import { type Database } from '~/types/supabase';
 const color = useColorMode();
 const date = ref(new Date());
 const guests = ref(1);
-const disabledDates = ref([]);
+const disabledDates = ref<string[]>([]);
 const isDark = ref(false);
+const timezone = ref('UTC');
 
-const values = ref([]);
-console.log(values);
+const email = ref<string>('');
+
+
+
+
+
+const values = ref<{
+  created_at: string;
+  description: string;
+  id: number;
+  name: string;
+  price: number;
+
+}[]>([]);
+
 
 const supabase = useSupabaseClient<Database>();
 const { data, error } = await supabase.from("available_services").select();
@@ -105,7 +137,79 @@ if (error) {
   console.error(error);
 }
 
-console.log(data);
+const user = await supabase.auth.getUser().catch();
+
+
+const loadReservations = async () => {
+  const { data, error } = await supabase.from("reservations").select("reservation_date");
+  if (error) {
+    console.error(error);
+  }
+  if (data) {
+    disabledDates.value = data.map((reservation) => (reservation.reservation_date));
+  }
+};
+
+
+const bookEvent = async () => {
+  
+  
+
+  if (user.data.user) {
+    email.value = "elusuariositienecorreo@gmail.com";
+  }
+  else {
+    if (email.value === "") {
+      alert("Por favor ingrese un correo electronico");
+      return;
+    }
+  }
+
+  const { data, error } = await supabase.from("reservations").insert({
+    reservation_date: date.value.toISOString().split('T')[0],
+    email: email.value,
+  });
+
+
+  if (error) {
+    console.error(error);
+  }
+  else {
+    bookServices();
+  }
+
+};
+
+//console.log(data);
+
+
+const getEventID = async () => {
+  const { data, error } = await supabase.from("reservations").select("id").eq("reservation_date", date.value.toISOString().split('T')[0]);
+  return data && data.length > 0 ? data[0].id : null;
+}
+
+const bookServices = async () => {
+  
+  const eventID = await getEventID();
+
+  
+  let total_amount = 0;
+  
+  for (let i = 0; i < values.value.length; i++) {
+    total_amount += values.value[i].price;    
+    const { data, error } = await supabase.from("reservation_services").insert({
+      reservation_id: eventID||0,
+      service_id: values.value[i].id
+    }); 
+    if (error) {
+      console.error(error);
+    }
+  }
+  const { data, error } = await supabase.from("reservations").update({ total_amount: total_amount, guests:guests.value }).eq("id", eventID||0);
+  
+  alert("Reservación exitosa");
+  window.location.reload();
+};
 
 watch(() => color.preference, (newVal) => {
   isDark.value = newVal === 'night';
@@ -113,6 +217,7 @@ watch(() => color.preference, (newVal) => {
 
 onMounted(() => {
   isDark.value = color.preference === 'night';
+  loadReservations();
 });
 </script>
 
