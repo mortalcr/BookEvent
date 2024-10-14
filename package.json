@@ -13,6 +13,8 @@
     "@nuxtjs/color-mode": "^3.5.1",
     "@nuxtjs/supabase": "^1.4.0",
     "@nuxtjs/tailwindcss": "^6.12.1",
+    "@paypal/paypal-js": "^8.1.2",
+    "@paypal/paypal-server-sdk": "^0.5.2",
     "@popperjs/core": "^2.11.8",
     "@supabase/supabase-js": "^2.45.4",
     "lucide-vue-next": "^0.446.0",

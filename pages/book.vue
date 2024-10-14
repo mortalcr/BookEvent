@@ -40,7 +40,6 @@
               href="https://www.google.com/maps/place/Rancho+Fern%C3%A1ndez+Fern%C3%A1ndez/@10.0911155,-84.453697,15z/data=!4m6!3m5!1s0x8fa044c4da796e8d:0xfd7cdc29a4041789!8m2!3d10.0911155!4d-84.453697!16s%2Fg%2F11bw2_gv47?entry=ttu&g_ep=EgoyMDI0MDkyOS4wIKXMDSoASAFQAw%3D%3D">San
               Ramon, Costa Rica</a></span>
         </div>
-        {{ values }}
         <form class="flex flex-col gap-2">
           <div v-for="(service, idx) in data" :key="idx" class="form-control">
             <div class="flex flex-row gap-2 items-start cursor-pointer">
@@ -63,11 +62,10 @@
         <div class="card bg-base-100 shadow-xl">
           <div class="card-body">
             <h2 class="card-title">Reserva tu evento</h2>
-            <div class="mb-4">
+            <div class="mb-4 flex flex-col items-center">
               <label for="dates">Selecciona las fechas</label>
-              <v-date-picker borderless v-model="date" mode="date" class="custom-picker" is-required
-                :min-date='new Date()' locale="es" :timezone="timezone" transparent :disabled-dates="disabledDates"
-                :is-dark="isDark" />
+              <v-date-picker borderless v-model="date" mode="date" class="w-fit" is-required :min-date='new Date()'
+                locale="es" :timezone="timezone" transparent :disabled-dates="disabledDates" :is-dark="isDark" />
             </div>
             <div class="mb-4">
               <label for="guests">Número de invitados (capacidad 100 personas)</label>
@@ -75,19 +73,20 @@
                 @input="guests = guests > 100 ? 100 : guests < 1 ? 1 : Math.round(guests)"
                 class="input input-bordered w-full mt-3" />
             </div>
-            <div v-if="!user.data.user"  class="mb-4">
+            <!-- <div v-if="!user.data.user" class="mb-4">
               <label for="guests">Correo electronico (A este correo se enviará el comprobante)</label>
-              <input type="email" id="email" placeholder="Correo electronico" v-model="email" class="input input-bordered w-full mt-3" />
-            </div>
+              <input type="email" id="email" placeholder="Correo electronico" v-model="email"
+                class="input input-bordered w-full mt-3" />
+            </div> -->
             <div class="mb-6">
               <h3 class="font-semibold mb-2">Precio</h3>
-              <p class="text-2xl font-bold">₡{{values.map((service) => service.price).reduce((acc, price) => acc +
-                price, 0)}} CRC <span class="text-sm font-normal text-gray-500">por día</span>
+              <p class="text-2xl font-bold">₡{{ values.map((service) => service.price).reduce((acc, price) => acc +
+                price, 0) }} CRC <span class="text-sm font-normal text-gray-500">por día</span>
               </p>
             </div>
-            <button class="btn btn-primary w-full" :disabled="values.length<1" @click="bookEvent">Reservar
-              ahora</button>
-            <div v-if="values.length<1" role="alert" class="alert alert-error">
+            <div id="paypal-button-container" :hidden="values.length < 1 || disabledDates.includes(formatDate(date))">
+            </div>
+            <div v-if="values.length < 1" role="alert" class="alert alert-error">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
                 viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -95,18 +94,33 @@
               </svg>
               <span>Debe seleccionar al menos un servicio.</span>
             </div>
+            <div v-if="disabledDates.includes(formatDate(date))" role="alert" class="alert alert-error">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>La fecha seleccionada no se encuentra disponible.</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
+// NOTE: POS code thanks to noni
 import { ref, watch, onMounted } from 'vue';
 import { MapPinIcon } from 'lucide-vue-next';
 import 'v-calendar/style.css';
 import { type Database } from '~/types/supabase';
+
+import { loadScript } from '@paypal/paypal-js';
+
+function formatDate(d: Date): string {
+  return d.toISOString().split("T")[0];
+}
+
 
 const color = useColorMode();
 const date = ref(new Date());
@@ -115,21 +129,13 @@ const disabledDates = ref<string[]>([]);
 const isDark = ref(false);
 const timezone = ref('UTC');
 
-const email = ref<string>('');
-
-
-
-
-
 const values = ref<{
   created_at: string;
   description: string;
   id: number;
   name: string;
   price: number;
-
 }[]>([]);
-
 
 const supabase = useSupabaseClient<Database>();
 const { data, error } = await supabase.from("available_services").select();
@@ -137,10 +143,7 @@ if (error) {
   console.error(error);
 }
 
-const user = await supabase.auth.getUser().catch();
-
-
-const loadReservations = async () => {
+{
   const { data, error } = await supabase.from("reservations").select("reservation_date");
   if (error) {
     console.error(error);
@@ -148,65 +151,38 @@ const loadReservations = async () => {
   if (data) {
     disabledDates.value = data.map((reservation) => (reservation.reservation_date));
   }
-};
+}
 
-
-const bookEvent = async () => {
-  
-  
-
-  if (user.data.user) {
-    email.value = "elusuariositienecorreo@gmail.com";
-  }
-  else {
-    if (email.value === "") {
-      alert("Por favor ingrese un correo electronico");
-      return;
-    }
-  }
-
+const bookEvent = async (email: string) => {
+  // BUG: #HERE => what happens if the connection is lost between #HERE and #THERE
   const { data, error } = await supabase.from("reservations").insert({
     reservation_date: date.value.toISOString().split('T')[0],
-    email: email.value,
-  });
-
+    email: email,
+  }).select();
 
   if (error) {
     console.error(error);
+    return;
   }
-  else {
-    bookServices();
-  }
-
+  bookServices(data[0].id);
 };
 
-//console.log(data);
-
-
-const getEventID = async () => {
-  const { data, error } = await supabase.from("reservations").select("id").eq("reservation_date", date.value.toISOString().split('T')[0]);
-  return data && data.length > 0 ? data[0].id : null;
-}
-
-const bookServices = async () => {
-  
-  const eventID = await getEventID();
-
-  
+const bookServices = async (eventID: number) => {
+  // BUG: #THERE => !
   let total_amount = 0;
-  
   for (let i = 0; i < values.value.length; i++) {
-    total_amount += values.value[i].price;    
-    const { data, error } = await supabase.from("reservation_services").insert({
-      reservation_id: eventID||0,
+    total_amount += values.value[i].price;
+    const { error } = await supabase.from("reservation_services").insert({
+      reservation_id: eventID || 0,
       service_id: values.value[i].id
-    }); 
+    });
     if (error) {
       console.error(error);
     }
   }
-  const { data, error } = await supabase.from("reservations").update({ total_amount: total_amount, guests:guests.value }).eq("id", eventID||0);
-  
+
+  await supabase.from("reservations").update({ total_amount: total_amount, guests: guests.value }).eq("id", eventID || 0);
+
   alert("Reservación exitosa");
   window.location.reload();
 };
@@ -215,10 +191,57 @@ watch(() => color.preference, (newVal) => {
   isDark.value = newVal === 'night';
 });
 
-onMounted(() => {
+onMounted(async () => {
   isDark.value = color.preference === 'night';
-  loadReservations();
+
+  try {
+    const paypal = await loadScript({
+      clientId: import.meta.env.VITE_PAYPAL_CLIENT_ID as string,
+    });
+
+    if (paypal?.Buttons) {
+      paypal.Buttons({
+        style: {
+          shape: "rect",
+          layout: "vertical",
+          color: "blue",
+          label: "paypal",
+        },
+        async createOrder(): Promise<string> {
+          const response = await fetch("/api/orders", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              cart: values.value
+            })
+          });
+
+          let responseData = await response.json();
+          responseData = JSON.parse(responseData);
+          if (responseData.id) {
+            return responseData.id;
+          }
+
+          const errorDetail = responseData?.details?.[0];
+          const errorMessage = errorDetail
+            ? `${errorDetail.issue} ${errorDetail.description} (${responseData.debug_id})`
+            : JSON.stringify(responseData);
+
+          throw new Error(errorMessage);
+        },
+        async onApprove(_, actions) {
+          const order = await actions.order?.get();
+          bookEvent(order?.payer?.email_address as string);
+          // NOTE: fabs de ahí en adelante ya se registró el evento, este código tiene un montón de problemas, además de que 
+          // la reservación debería hacerse en el backend no en el frontend, esto está terrible, saludos a @noni que trabaja demasiado
+          // bien y acepta críticas constructivas
+        }
+      }).render("#paypal-button-container");
+    }
+  } catch (e) {
+    console.error(e);
+  }
 });
 </script>
-
-<style></style>
