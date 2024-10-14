@@ -165,9 +165,38 @@ const bookEvent = async (email: string) => {
     console.error(error);
     return;
   }
-  bookServices(data[0].id);
+
+  const eventId = data[0].id;  // Obtener el `eventId` de la reserva creada
+  await bookServices(eventId);
+
+  // Calcular el total de los servicios seleccionados
+  const total = values.value.reduce((acc, service) => acc + service.price, 0);
+
+  // Enviar el correo con la cotización
+  await sendEmailConfirmation(eventId, values.value, total);
+
+  alert("Reservación exitosa. Se ha enviado la cotización a tu correo.");
+  window.location.reload();
 };
 
+// Función para enviar el correo de confirmación
+const sendEmailConfirmation = async (eventId: number, services: any[], total: number) => {
+  try {
+    const response = await $fetch('/api/send-email', {
+      method: 'POST',
+      body: {
+        eventId: eventId,  // Enviamos el `eventId` a la API
+        services: services,
+        total: total,
+      }
+    });
+    console.log('Correo enviado correctamente:', response);
+  } catch (error) {
+    console.error('Error al enviar el correo de confirmación:', error);
+  }
+};
+
+// Función para guardar los servicios seleccionados
 const bookServices = async (eventID: number) => {
   // BUG: #THERE => !
   let total_amount = 0;
@@ -182,10 +211,7 @@ const bookServices = async (eventID: number) => {
     }
   }
 
-  await supabase.from("reservations").update({ total_amount: total_amount, guests: guests.value }).eq("id", eventID || 0);
-
-  alert("Reservación exitosa");
-  window.location.reload();
+  await supabase.from("reservations").update({ total_amount: total_amount, guests: guests.value }).eq("id", eventID);
 };
 
 watch(() => color.preference, (newVal) => {
