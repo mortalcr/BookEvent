@@ -13,13 +13,11 @@ interface Item {
 
 // TODO: extract type for the cart item piece of shit
 const createOrder = async (cart: { cart: Item[] }) => {
-  console.log(cart);
   const o = {
     currencyCode: "USD",
     // TODO: daily exchange rate updates
     value: (cart.cart.map(e => e.price).reduce((a, b) => a + b, 0) / 517.28).toFixed(2).toString(),
   };
-  console.log("o=", o);
   const collect = {
     body: {
       intent: "CAPTURE",
@@ -52,6 +50,5 @@ const createOrder = async (cart: { cart: Item[] }) => {
 export default defineEventHandler(async (event: H3Event) => {
   const body = await readBody<{ cart: Item[] }>(event);
   const f = await createOrder(body);
-  console.log("jsonResponse", f?.jsonResponse);
   return f?.jsonResponse;
 });
