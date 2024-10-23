@@ -154,30 +154,34 @@ if (error) {
   }
 }
 
-const bookEvent = async (email: string) => {
-  // BUG: #HERE => what happens if the connection is lost between #HERE and #THERE
-  const { data, error } = await supabase.from("reservations").insert({
-    reservation_date: date.value.toISOString().split('T')[0],
-    email: email,
-  }).select();
+const bookEvent = async(email: string) => {
 
-  if (error) {
-    console.error(error);
-    return;
+  try {
+    const response = await $fetch('/api/book', {
+      method: 'POST',
+      body: {
+        reservation_date_user: date.value.toISOString().split('T')[0],  // Enviamos el `eventId` a la API
+        email_user: email,
+        values: values.value,
+        guests: guests.value,
+      }
+    });
+
+    if (response?.success) {
+      console.log('Evento reservado correctamente:', response);
+      await sendEmailConfirmation(response.message[0], values.value, response.message[1]);
+    }
+    
+    
+  } catch (error) {
+    console.error('Error al enviar el correo de confirmación:', error);
   }
 
-  const eventId = data[0].id;  // Obtener el `eventId` de la reserva creada
-  await bookServices(eventId);
 
-  // Calcular el total de los servicios seleccionados
-  const total = values.value.reduce((acc, service) => acc + service.price, 0);
+}
 
-  // Enviar el correo con la cotización
-  await sendEmailConfirmation(eventId, values.value, total);
 
-  alert("Reservación exitosa. Se ha enviado la cotización a tu correo.");
-  window.location.reload();
-};
+
 
 // Función para enviar el correo de confirmación
 const sendEmailConfirmation = async (eventId: number, services: any[], total: number) => {
@@ -196,23 +200,6 @@ const sendEmailConfirmation = async (eventId: number, services: any[], total: nu
   }
 };
 
-// Función para guardar los servicios seleccionados
-const bookServices = async (eventID: number) => {
-  // BUG: #THERE => !
-  let total_amount = 0;
-  for (let i = 0; i < values.value.length; i++) {
-    total_amount += values.value[i].price;
-    const { error } = await supabase.from("reservation_services").insert({
-      reservation_id: eventID || 0,
-      service_id: values.value[i].id
-    });
-    if (error) {
-      console.error(error);
-    }
-  }
-
-  await supabase.from("reservations").update({ total_amount: total_amount, guests: guests.value }).eq("id", eventID);
-};
 
 watch(() => color.preference, (newVal) => {
   isDark.value = newVal === 'night';
