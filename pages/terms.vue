@@ -116,6 +116,46 @@ const terms = [
         "content": "Se permite únicamente el calentamiento de alimentos en el lugar."
       }
     ]
+  },
+  {
+    "id": "payment_terms",
+    "title": "Términos de Pago",
+    "conditions": [
+      {
+        "id": "paypal_payment_method",
+        "content": "Todos los pagos realizados a través de la aplicación se procesan mediante PayPal."
+      },
+      {
+        "id": "estimated_price_in_colones",
+        "content": "El precio mostrado en la aplicación es un precio estimado en colones."
+      },
+      {
+        "id": "price_conversion_to_usd",
+        "content": "El precio final será convertido a dólares al momento de realizar el pago, por lo que el monto mostrado es solo una estimación."
+      }
+    ]
+  },
+  {
+    "id": "payment_terms",
+    "title": "Términos de Pago",
+    "conditions": [
+      {
+        "id": "paypal_payment_method",
+        "content": "Todos los pagos realizados a través de la aplicación se procesan mediante PayPal."
+      },
+      {
+        "id": "estimated_price_in_colones",
+        "content": "El precio mostrado en la aplicación es un precio estimado en colones."
+      },
+      {
+        "id": "price_conversion_to_usd",
+        "content": "El precio final será convertido a dólares al momento de realizar el pago, por lo que el monto mostrado es solo una estimación."
+      },
+      {
+        "id": "paypal_fee",
+        "content": "PayPal cobra una comisión sobre el precio total, la cual se reflejará al momento de realizar el pago."
+      }
+    ]
   }
 ];
 
