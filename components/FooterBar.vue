@@ -18,6 +18,6 @@
                 </a>
             </div>
         </div>
-        <p>Copyright © 2024 - All right reserved</p>
+        <p>Copyright © {{ new Date().getUTCFullYear() }} | Todos los derechos reservados</p>
     </footer>
 </template>
