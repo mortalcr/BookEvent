@@ -55,9 +55,11 @@
           </div>
         </form>
         <p class="mb-6">
-          Nuestro salón de eventos es perfecto para tus eventos especiales. Con capacidad para hasta <strong>100</strong> personas,
+          Nuestro salón de eventos es perfecto para tus eventos especiales. Con capacidad para hasta
+          <strong>100</strong> personas,
           ofrece un espacio versátil y moderno para todas tus celebraciones. <br><br>
-          <strong>Contamos con servicio de transporte para el alquiler de mobiliario, manteleria, toldos e inflables infantiles.</strong>
+          <strong>Contamos con servicio de transporte para el alquiler de mobiliario, manteleria, toldos e inflables
+            infantiles.</strong>
         </p>
       </div>
       <div>
@@ -163,7 +165,7 @@ if (error) {
   }
 }
 
-const bookEvent = async(email: string) => {
+const bookEvent = async (email: string) => {
 
   try {
     const response = await $fetch('/api/book', {
@@ -180,8 +182,8 @@ const bookEvent = async(email: string) => {
       console.log('Evento reservado correctamente:', response);
       await sendEmailConfirmation(response.message[0], values.value, response.message[1]);
     }
-    
-    
+
+
   } catch (error) {
     console.error('Error al enviar el correo de confirmación:', error);
   }
