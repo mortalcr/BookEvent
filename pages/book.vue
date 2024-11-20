@@ -82,11 +82,12 @@
             </div> -->
             <div class="mb-6">
               <h3 class="font-semibold mb-2">Precio</h3>
-              <p class="text-2xl font-bold">₡{{ values.map((service) => service.price).reduce((acc, price) => acc +
+              <p class="text-2xl font-bold mb-1">₡{{ values.map((service) => service.price).reduce((acc, price) => acc +
                 price, 0) }} CRC <span class="text-sm font-normal text-gray-500">por día</span>
               </p>
+              <p class="text-xs text-gray-500 font-semibold">Precio estimado*</p>
             </div>
-            <div id="paypal-button-container" :hidden="values.length < 1 || disabledDates.includes(formatDate(date))">
+            <div id="paypal-button-container" :hidden="!acceptedTerms || (values.length < 1 || disabledDates.includes(formatDate(date)))">
             </div>
             <div v-if="values.length < 1" role="alert" class="alert alert-error">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
@@ -103,6 +104,12 @@
                   d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <span>La fecha seleccionada no se encuentra disponible.</span>
+            </div>
+            <div class="form-control">
+              <label for="terms" class="label cursor-pointer" :class="{'text-error': !acceptedTerms}">
+                <input class="checkbox me-2" v-model="acceptedTerms" type="checkbox">
+                <p>He leído y acepto los <NuxtLink class="link link-primary" target="_blank" href="/terms">términos y condiciones</NuxtLink>.</p>
+              </label>
             </div>
           </div>
         </div>
@@ -124,6 +131,7 @@ function formatDate(d: Date): string {
 }
 
 
+const acceptedTerms = ref(false);
 const color = useColorMode();
 const date = ref(new Date());
 const guests = ref(1);
