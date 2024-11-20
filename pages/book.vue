@@ -1,6 +1,6 @@
 <template>
   <div class="max-w-4xl mx-auto p-4">
-    <h1 class="text-3xl font-bold mb-6">Salón de Eventos</h1>
+    <h1 class="text-3xl font-bold mb-6">Selecciona y reserva nuestros servicios</h1>
 
     <div class="grid md:grid-cols-2 gap-6">
       <div>
@@ -40,7 +40,7 @@
           </span>
         </div>
         <form class="flex flex-col gap-2">
-          <h3 class="text-gray-500 font-bold">Seleccione al menos un evento</h3>
+          <h3 class="text-gray-500 font-bold">Seleccione al menos un servicio</h3>
           <div v-for="(service, idx) in data" :key="idx" class="form-control">
             <div class="flex flex-row gap-2 items-start cursor-pointer">
               <div class="collapse">
