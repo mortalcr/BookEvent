@@ -8,21 +8,22 @@
           </svg>
         </div>
         <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-          <li><a href="/">Home</a></li>
-          <li><a href="book">Book</a></li>
-          <li><a href="about">About</a></li>
-          <li><a href="contact">Contact</a></li>
+          <li><a href="/">Inicio</a></li>
+          <li><a href="book">Reservar</a></li>
+          <li><a href="about">Sobre Nosotros</a></li>
+          <li><a href="contact">Contacto</a></li>
+          <li><a href="gallery">Galería</a></li>
         </ul>
       </div>
-      <a class="btn btn-ghost text-xl">BookEvent</a>
+      <a class="btn btn-ghost text-xl">Rancho Fernández</a>
     </div>
     <div class="navbar-center hidden lg:flex">
       <ul class="menu menu-horizontal px-1">
-        <li><a href="/">Home</a></li>
-        <li><a href="book">Book</a></li>
-        <li><a href="about">About</a></li>
-        <li><a href="contact">Contact</a></li>
-        <li><a href="gallery">Gallery</a></li>
+        <li><a href="/">Inicio</a></li>
+        <li><a href="book">Reservar</a></li>
+        <li><a href="about">Sobre Nosotros</a></li>
+        <li><a href="contact">Contacto</a></li>
+        <li><a href="gallery">Galería</a></li>
       </ul>
     </div>
     <div class="navbar-end">
