@@ -41,6 +41,7 @@
               Ramon, Costa Rica</a></span>
         </div>
         <form class="flex flex-col gap-2">
+          <h3 class="text-gray-500 font-bold">Seleccione al menos un evento</h3>
           <div v-for="(service, idx) in data" :key="idx" class="form-control">
             <div class="flex flex-row gap-2 items-start cursor-pointer">
               <div class="collapse">
