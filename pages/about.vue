@@ -4,7 +4,7 @@
       <div class="card bg-base-100 shadow-xl">
         <figure>
           <img
-            src="assets\images\rancho.jpg" 
+            src="assets\images\ranchophoto1.png" 
             alt="Rancho Familia Fernández Fernández"
             class="w-full h-64 object-cover"
           />

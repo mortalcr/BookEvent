@@ -4,41 +4,40 @@
 
     <div class="grid md:grid-cols-2 gap-6">
       <div>
-        <div class="carousel w-full">
-          <div id="slide1" class="carousel-item relative w-full">
-            <img src="/assets/images/ranchophoto1.png" class="w-full h-[400px] object-cover rounded-lg mb-4" />
-            <div class="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
-              <a href="#slide4" class="btn btn-circle">❮</a>
-              <a href="#slide2" class="btn btn-circle">❯</a>
-            </div>
-          </div>
-          <div id="slide2" class="carousel-item relative w-full">
-            <img src="/assets/images/ranchophoto2.png" class="w-full h-[400px] object-cover rounded-lg mb-4" />
-            <div class=" absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
-              <a href="#slide1" class="btn btn-circle">❮</a>
-              <a href="#slide3" class="btn btn-circle">❯</a>
-            </div>
-          </div>
-          <div id="slide3" class="carousel-item relative w-full">
-            <img src="/assets/images/ranchophoto3.png" class="w-full h-[400px] object-cover rounded-lg mb-4" />
-            <div class=" absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
-              <a href="#slide2" class="btn btn-circle">❮</a>
-              <a href="#slide4" class="btn btn-circle">❯</a>
-            </div>
-          </div>
-          <div id="slide4" class="carousel-item relative w-full">
-            <img src="/assets/images/ranchophoto4.png" class="w-full h-[400px] object-cover rounded-lg mb-4" />
-            <div class=" absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
-              <a href="#slide3" class="btn btn-circle">❮</a>
-              <a href="#slide1" class="btn btn-circle">❯</a>
+        <div>
+          <!-- Carousel -->
+          <div class="carousel w-full">
+            <div
+              v-for="(image, index) in images"
+              :key="index"
+              class="carousel-item relative w-full"
+              :class="{ hidden: activeSlide !== index, block: activeSlide === index }"
+            >
+              <!-- Image -->
+              <img
+                :src="image"
+                class="w-full h-[400px] object-cover rounded-lg mb-4"
+                alt="Evento"
+              />
+              <!-- Navigation -->
+              <div class="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+                <button class="btn btn-circle" @click="prevSlide">❮</button>
+                <button class="btn btn-circle" @click="nextSlide">❯</button>
+              </div>
             </div>
           </div>
         </div>
+
         <div class="flex items-center mb-4">
           <map-pin-icon class="w-5 h-5 mr-2 text-gray-500" />
-          <span><a target="_blank"
-              href="https://www.google.com/maps/place/Rancho+Fern%C3%A1ndez+Fern%C3%A1ndez/@10.0911155,-84.453697,15z/data=!4m6!3m5!1s0x8fa044c4da796e8d:0xfd7cdc29a4041789!8m2!3d10.0911155!4d-84.453697!16s%2Fg%2F11bw2_gv47?entry=ttu&g_ep=EgoyMDI0MDkyOS4wIKXMDSoASAFQAw%3D%3D">San
-              Ramon, Costa Rica</a></span>
+          <span>
+            <a
+              target="_blank"
+              href="https://www.google.com/maps/place/Rancho+Fern%C3%A1ndez+Fern%C3%A1ndez/@10.0911155,-84.453697,15z/data=!4m6!3m5!1s0x8fa044c4da796e8d:0xfd7cdc29a4041789!8m2!3d10.0911155!4d-84.453697!16s%2Fg%2F11bw2_gv47?entry=ttu&g_ep=EgoyMDI0MDkyOS4wIKXMDSoASAFQAw%3D%3D"
+            >
+              San Ramon, Costa Rica
+            </a>
+          </span>
         </div>
         <form class="flex flex-col gap-2">
           <h3 class="text-gray-500 font-bold">Seleccione al menos un evento</h3>
@@ -89,7 +88,8 @@
               </p>
               <p class="text-xs text-gray-500 font-semibold">Precio estimado*</p>
             </div>
-            <div id="paypal-button-container" :hidden="!acceptedTerms || (values.length < 1 || disabledDates.includes(formatDate(date)))">
+            <div id="paypal-button-container"
+              :hidden="!acceptedTerms || (values.length < 1 || disabledDates.includes(formatDate(date)))">
             </div>
             <div v-if="values.length < 1" role="alert" class="alert alert-error">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
@@ -110,7 +110,8 @@
             <div class="form-control">
               <label for="terms" class="label cursor-pointer" :class="{'text-error': !acceptedTerms}">
                 <input class="checkbox me-2" v-model="acceptedTerms" type="checkbox">
-                <p>He leído y acepto los <NuxtLink class="link link-primary" target="_blank" href="/terms">términos y condiciones</NuxtLink>.</p>
+                <p>He leído y acepto los <NuxtLink class="link link-primary" target="_blank" href="/terms">términos y
+                    condiciones</NuxtLink>.</p>
               </label>
             </div>
           </div>
@@ -148,6 +149,32 @@ const values = ref<{
   name: string;
   price: number;
 }[]>([]);
+
+// List of images
+const images = ref([
+  "/images/ranchophoto1.png",
+  "/images/ranchophoto3.png",
+  "/images/5.jpg",
+  "/images/7.jpg",
+  "/images/9.jpg",
+  "/images/12.jpg",
+  "/images/14.jpg",
+]);
+
+// Current slide index
+const activeSlide = ref(0);
+
+// Next slide function
+const nextSlide = () => {
+  activeSlide.value = (activeSlide.value + 1) % images.value.length;
+};
+
+// Previous slide function
+const prevSlide = () => {
+  activeSlide.value =
+    activeSlide.value === 0 ? images.value.length - 1 : activeSlide.value - 1;
+};
+
 
 const supabase = useSupabaseClient<Database>();
 const { data, error } = await supabase.from("available_services").select();
