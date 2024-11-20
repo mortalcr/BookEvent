@@ -208,6 +208,7 @@ const bookEvent = async (email: string) => {
     if (response?.success) {
       console.log('Evento reservado correctamente:', response);
       await sendEmailConfirmation(response.message[0], values.value, response.message[1]);
+      window.location.reload();
     }
 
 
