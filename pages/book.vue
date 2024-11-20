@@ -1,6 +1,6 @@
 <template>
   <div class="max-w-4xl mx-auto p-4">
-    <h1 class="text-3xl font-bold mb-6">Salón Elegante para Eventos</h1>
+    <h1 class="text-3xl font-bold mb-6">Salón de Eventos</h1>
 
     <div class="grid md:grid-cols-2 gap-6">
       <div>
