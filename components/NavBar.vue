@@ -11,7 +11,6 @@
           <li><a href="/">Inicio</a></li>
           <li><a href="book">Reservar</a></li>
           <li><a href="about">Sobre Nosotros</a></li>
-          <li><a href="contact">Contacto</a></li>
           <li><a href="gallery">Galería</a></li>
         </ul>
       </div>
@@ -22,7 +21,6 @@
         <li><a href="/">Inicio</a></li>
         <li><a href="book">Reservar</a></li>
         <li><a href="about">Sobre Nosotros</a></li>
-        <li><a href="contact">Contacto</a></li>
         <li><a href="gallery">Galería</a></li>
       </ul>
     </div>
