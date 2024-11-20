@@ -2,9 +2,9 @@
 export default defineNuxtConfig({ 
   runtimeConfig: {
     SUPABASE_URL: process.env.SUPABASE_URL,
-    SUPABASE_KEY: process.env.SUPABASE_KEY, // Mantén la clave privada aquí
+    SUPABASE_KEY: process.env.SUPABASE_KEY, 
     public: {
-      SUPABASE_URL: process.env.SUPABASE_URL, // Puedes exponer la URL si es necesario
+      SUPABASE_URL: process.env.SUPABASE_URL,
     },
   },
   compatibilityDate: "2024-04-03",
